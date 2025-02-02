@@ -1,6 +1,13 @@
 [package]
 name = "rps"
 version = "0.1.0"
+authors = ["Evgenii Pochechuev <pchchv@gmail.com>"]
 edition = "2021"
+description = "Mini reverse proxy server"
+readme = "README.md"
+repository = "https://github.com/pchchv/rps"
+license = "Apache-2.0"
+keywords = ["reverse-proxy", "server"]
+categories = ["web-programming::http-server"]
 
 [dependencies]
