@@ -11,3 +11,4 @@ keywords = ["reverse-proxy", "server"]
 categories = ["web-programming::http-server"]
 
 [dependencies]
+clap = {version = "4.5.27", features = ["derive"]}
