@@ -43,3 +43,7 @@ pub fn format(value: &Value, encoding: &str) -> Result<String, Error> {
         }
     }
 }
+
+pub fn bytes(text: &str) -> Vec<u8> {
+    text.as_bytes().to_vec()
+}
