@@ -15,3 +15,4 @@ clap = {version = "4.5.27", features = ["derive"]}
 serde = "1.0.217"
 serde_derive = "1.0.217"
 serde_json = "1.0.138"
+toml = "0.8.19"
