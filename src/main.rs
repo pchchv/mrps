@@ -1,6 +1,7 @@
 mod debug;
 mod assets;
 mod config;
+mod templates;
 
 use std::path::PathBuf;
 use clap::Parser;
