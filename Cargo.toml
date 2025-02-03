@@ -12,6 +12,7 @@ categories = ["web-programming::http-server"]
 
 [dependencies]
 axum = "0.8.1"
+chrono = "0.4.39"
 clap = {version = "4.5.27", features = ["derive"]}
 glob-match = "0.2.1"
 mime_guess = "2.0.5"
