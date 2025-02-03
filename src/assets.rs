@@ -1,5 +1,10 @@
+use mime_guess;
+use std::fs::read;
 use std::error::Error;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
+use axum::{response::Response, http::StatusCode, http::header::{HeaderValue, CONTENT_TYPE}};
+use glob_match::glob_match;
+use crate::debug::debug;
 
 #[derive(Clone)]
 pub struct Assets {
@@ -75,5 +80,19 @@ impl Assets {
         }
 
         Ok(response)
+    }
+
+    pub fn get(&self, path_str: &str) -> Result<Response, StatusCode> {
+        let path = format!("/{}", path_str);
+        match self.getter(path_str) {
+            Ok(response) => {
+                debug("GET", &path, Some(200), "");
+                Ok(response)
+            },
+            Err(status) => {
+                debug("GET", &path, Some(status.as_u16()), "");
+                Err(status)
+            }
+        }
     }
 }
