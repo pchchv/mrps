@@ -1,3 +1,5 @@
+mod format;
+
 use std::error::Error;
 use std::path::PathBuf;
 use minijinja::{Environment, path_loader};
