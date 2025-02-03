@@ -1,3 +1,5 @@
+mod debug;
+mod assets;
 mod config;
 
 use std::path::PathBuf;
