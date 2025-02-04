@@ -8,7 +8,7 @@ use parse::parse;
 use std::error::Error;
 use std::path::PathBuf;
 use format::{format, bytes};
-use minijinja::{Environment, path_loader};
+use minijinja::{Environment, path_loader, Value};
 use fetch::{get, delete, head, options, post, put, patch};
 
 pub fn new(dir: PathBuf, data: Option<PathBuf>) -> Result<Environment<'static>, Box<dyn Error>> {
