@@ -1,3 +1,4 @@
+use std::path::PathBuf;
 use serde_derive::Serialize;
 
 #[derive(Serialize)]
@@ -11,3 +12,11 @@ struct File {
     name: String,
     len: u64
 }
+
+#[derive(Clone)]
+pub struct IO {
+    dir: PathBuf
+}
+
+impl IO {
+} 
