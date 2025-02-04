@@ -1,14 +1,19 @@
 mod parse;
 mod fetch;
+// mod command;
+// mod file;
 mod format;
 
+use file::IO;
 use parse::parse;
 use std::error::Error;
 use std::path::PathBuf;
 use format::{format, bytes};
+use minijinja::{Environment, path_loader}; // {Environment, path_loader, Value};
+// use command::command;
 use fetch::{get, delete, head, options, post, put, patch};
 
-pub fn new(dir: PathBuf) -> Result<Environment<'static>, Box<dyn Error>> {
+pub fn new(dir: PathBuf, data: Option<PathBuf>) -> Result<Environment<'static>, Box<dyn Error>> {
     let mut env = Environment::new();
     env.set_loader(path_loader(dir));
     env.add_filter("parse", parse);
@@ -21,10 +26,28 @@ pub fn new(dir: PathBuf) -> Result<Environment<'static>, Box<dyn Error>> {
     env.add_function("head", head);
     env.add_function("options", options);
     env.add_function("delete", delete);
+    // env.add_function("command", command);
     env.add_function("log", |message: &str| -> () {
         println!("{}", message);
         ()
     });
+    if let Some(data) = data {
+        let io1 = IO::new(data)?;
+        let io2 = io1.clone();
+        let io3 = io1.clone();
+        env.add_function("read", move |entry: &str| -> Option<Value> {
+            io1.read(entry)
+        });
+        env.add_function("write", move |
+            file: &str,
+            data: &Vec<u8>
+        | -> Option<String> {
+            io2.write(file, data)
+        });
+        env.add_function("remove", move |entry: &str| -> Option<String> {
+            io3.remove(entry)
+        });
+    }
 
     Ok(env)
 }
