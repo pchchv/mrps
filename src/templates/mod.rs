@@ -1,7 +1,5 @@
 mod parse;
 mod fetch;
-// mod command;
-// mod file;
 mod format;
 
 use file::IO;
@@ -9,8 +7,7 @@ use parse::parse;
 use std::error::Error;
 use std::path::PathBuf;
 use format::{format, bytes};
-use minijinja::{Environment, path_loader}; // {Environment, path_loader, Value};
-// use command::command;
+use minijinja::{Environment, path_loader};
 use fetch::{get, delete, head, options, post, put, patch};
 
 pub fn new(dir: PathBuf, data: Option<PathBuf>) -> Result<Environment<'static>, Box<dyn Error>> {
@@ -26,7 +23,6 @@ pub fn new(dir: PathBuf, data: Option<PathBuf>) -> Result<Environment<'static>, 
     env.add_function("head", head);
     env.add_function("options", options);
     env.add_function("delete", delete);
-    // env.add_function("command", command);
     env.add_function("log", |message: &str| -> () {
         println!("{}", message);
         ()
