@@ -1,3 +1,4 @@
+use std::error::Error;
 use std::path::PathBuf;
 use serde_derive::Serialize;
 
@@ -19,4 +20,12 @@ pub struct IO {
 }
 
 impl IO {
+    pub fn new (dir: PathBuf) -> Result<IO, Box<dyn Error>> {
+        let p = dir.as_path();
+        if p.is_dir() {
+            Ok(IO {dir})
+        } else {
+            Err(format!("Data must be a directory: {}", p.display()).into())
+        }
+    }
 } 
