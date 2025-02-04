@@ -1,3 +1,4 @@
+mod parse;
 mod format;
 
 use std::error::Error;
