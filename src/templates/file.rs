@@ -1,3 +1,4 @@
+use std::fs;
 use std::error::Error;
 use std::path::{Path, PathBuf};
 use serde_derive::Serialize;
@@ -41,6 +42,31 @@ impl IO {
             Some(path)
         } else {
             None
+        }
+    }
+
+    pub fn remove(&self, entry: &str) -> Option<String> {
+        let path = match self.get_path(entry) {
+            Some(path) => path,
+            None => {
+                return Some(format!("Unable to resolve path: {}", entry))
+            }
+        };
+        let path = path.as_path();
+        if path.is_dir() {
+            match fs::remove_dir_all(path) {
+                Ok(_) => None,
+                Err(err) => Some(format!(
+                    "Unable to remove dir: {}\n{:#}", entry, err
+                ))
+            }
+        } else {
+            match fs::remove_file(path) {
+                Ok(_) => None,
+                Err(err) => Some(format!(
+                    "Unable to remove file: {}\n{:#}", entry, err
+                ))
+            }
         }
     }
 } 
