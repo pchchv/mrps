@@ -140,4 +140,30 @@ impl IO {
             None
         }
     }
+
+    pub fn write (&self, file: &str, data: &Vec<u8>) -> Option<String> {
+        let path = match self.get_path(file) {
+            Some(path) => path,
+            None => {
+                return Some(format!("Unable to resolve file: {}", file))
+            }
+        };
+        let path = path.as_path();
+        if let Some(dir) = path.parent() {
+            if !dir.exists() {
+                if let Err(err) = fs::create_dir_all(dir) {
+                    return Some(format!("Unable to create dir: {}\n{:#}",
+                        dir.display(), err
+                    ));
+                }
+            }
+        }
+
+        match fs::write(path, data) {
+            Ok(_) => None,
+            Err(err) => Some(format!("Unable to write file: {}\n{:#}",
+                file, err
+            ))
+        }
+    }
 }
