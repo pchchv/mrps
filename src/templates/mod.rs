@@ -1,3 +1,4 @@
+mod file;
 mod parse;
 mod fetch;
 mod format;
