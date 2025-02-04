@@ -94,22 +94,22 @@ pub fn post(url: &str, body: &Vec<u8>) -> Value {
     fetch("POST", url, Some(body))
 }
 
-pub fn put (url: &str, body: &Vec<u8>) -> Value {
+pub fn put(url: &str, body: &Vec<u8>) -> Value {
     fetch("PUT", url, Some(body))
 }
 
-pub fn patch (url: &str, body: &Vec<u8>) -> Value {
+pub fn patch(url: &str, body: &Vec<u8>) -> Value {
     fetch("PATCH", url, Some(body))
 }
 
-pub fn head (url: &str) -> Value {
+pub fn head(url: &str) -> Value {
     fetch("HEAD", url, None)
 }
 
-pub fn options (url: &str) -> Value {
+pub fn options(url: &str) -> Value {
     fetch("OPTIONS", url, None)
 }
 
-pub fn delete (url: &str) -> Value {
+pub fn delete(url: &str) -> Value {
     fetch("DELETE", url, None)
 }
