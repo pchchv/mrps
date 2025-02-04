@@ -1,7 +1,10 @@
 use minijinja::Value;
+use reqwest::{Method, Url};
 use serde_derive::Serialize;
 use std::collections::HashMap;
-use reqwest::blocking::Response;
+use tokio::task::block_in_place;
+use reqwest::blocking::{Client, Response};
+use crate::debug::debug;
 
 #[derive(Serialize)]
 struct Res {
