@@ -1,7 +1,9 @@
 use std::fs;
+use minijinja::Value;
 use std::error::Error;
-use std::path::{Path, PathBuf};
 use serde_derive::Serialize;
+use std::path::{Path, PathBuf};
+use crate::debug::time_string;
 
 #[derive(Serialize)]
 struct File {
@@ -69,4 +71,73 @@ impl IO {
             }
         }
     }
-} 
+
+    pub fn read (&self, entry: &str) -> Option<Value> {
+        let path = match self.get_path(entry) {
+            Some(path) => path,
+            None => {
+                return None
+            }
+        };
+        let path = path.as_path();
+        if path.try_exists().unwrap_or(false) {
+            if path.is_dir() {
+                let mut files: Vec<File> = Vec::new();
+                match fs::read_dir(path) {
+                    Ok(entries) => {
+                        for entry in entries {
+                            if let Ok(entry) = entry {
+                                let p = entry.path();
+                                let mut fname = String::new();
+                                if let Some(name) = p.file_name() {
+                                    if let Some(name) = name.to_str() {
+                                        fname = name.to_string();
+                                    }
+                                }
+
+                                let mut len: u64 = 0;
+                                let mut accessed = String::new();
+                                let mut created = String::new();
+                                let mut modified = String::new();
+                                if let Ok(meta) = p.metadata() {
+                                    len = meta.len();
+                                    if let Ok(time) = meta.accessed() {
+                                        accessed = time_string(time.into());
+                                    }
+
+                                    if let Ok(time) = meta.created() {
+                                        created = time_string(time.into());
+                                    }
+                                    
+                                    if let Ok(time) = meta.modified() {
+                                        modified = time_string(time.into());
+                                    }
+                                }
+                                
+                                files.push(File {
+                                    accessed,
+                                    created,
+                                    modified,
+                                    is_dir: p.is_dir(),
+                                    is_file: p.is_file(),
+                                    is_symlink: p.is_symlink(),
+                                    name: fname,
+                                    len
+                                });
+                            }
+                        }
+                        Some(Value::from_serialize(files))
+                    },
+                    Err(_) => None
+                }
+            } else {
+                match fs::read(path) {
+                    Ok(data) => Some(data.into()),
+                    Err(_) => None
+                }
+            }
+        } else {
+            None
+        }
+    }
+}
