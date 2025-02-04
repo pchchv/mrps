@@ -105,3 +105,11 @@ pub fn patch (url: &str, body: &Vec<u8>) -> Value {
 pub fn head (url: &str) -> Value {
     fetch("HEAD", url, None)
 }
+
+pub fn options (url: &str) -> Value {
+    fetch("OPTIONS", url, None)
+}
+
+pub fn delete (url: &str) -> Value {
+    fetch("DELETE", url, None)
+}
