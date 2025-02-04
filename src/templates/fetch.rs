@@ -93,3 +93,15 @@ pub fn get(url: &str) -> Value {
 pub fn post(url: &str, body: &Vec<u8>) -> Value {
     fetch("POST", url, Some(body))
 }
+
+pub fn put (url: &str, body: &Vec<u8>) -> Value {
+    fetch("PUT", url, Some(body))
+}
+
+pub fn patch (url: &str, body: &Vec<u8>) -> Value {
+    fetch("PATCH", url, Some(body))
+}
+
+pub fn head (url: &str) -> Value {
+    fetch("HEAD", url, None)
+}
