@@ -44,3 +44,41 @@ impl Res {
         })
     }
 }
+
+fn fetch(method: &str, url: &str, body: Option<&Vec<u8>>) -> Value {
+    let method: Method = match method.parse() {
+        Ok(method) => method,
+        Err(err) => {
+            return Res::err(format!("Invalid method!\n{:#?}", err));
+        }
+    };
+
+    let url: Url = match url.parse() {
+        Ok(url) => url,
+        Err(err) => {
+            return Res::err(format!("Invalid URL!\n{:#?}", err));
+        }
+    };
+
+    let m = method.as_str().to_string();
+    let p = url.to_string();
+    let mut request = Client::new().request(method, url);
+    if let Some(body) = body {
+        request = request.body(body.to_vec());
+    }
+
+    debug(&m, &p, None, "");
+    block_in_place(move || {
+        match request.send() {
+            Ok(response) => {
+                debug(&m, &p, Some(200), "");
+                Res::new(response)
+            },
+            Err(err) => {
+                let error = err.to_string();
+                debug(&m, &p, Some(500), &error);
+                Res::err(format!("Request fail!\n{}", &error))
+            }
+        }
+    })
+}
