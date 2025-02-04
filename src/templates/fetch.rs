@@ -85,3 +85,11 @@ fn fetch(method: &str, url: &str, body: Option<&Vec<u8>>) -> Value {
         }
     })
 }
+
+pub fn get(url: &str) -> Value {
+    fetch("GET", url, None)
+}
+
+pub fn post(url: &str, body: &Vec<u8>) -> Value {
+    fetch("POST", url, Some(body))
+}
