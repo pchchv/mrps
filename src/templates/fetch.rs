@@ -6,8 +6,8 @@ use reqwest::blocking::Response;
 #[derive(Serialize)]
 struct Res {
     status: u16,
-    body: Vec<u8>,
-    headers: HashMap<String, String>
+    headers: HashMap<String, String>,
+    body: Vec<u8>
 }
 
 impl Res {
@@ -25,14 +25,22 @@ impl Res {
         match response.bytes() {
             Ok(body) => Value::from_serialize(Res {
                 status,
-                body: body.to_vec(),
-                headers
+                headers,
+                body: body.to_vec()
             }),
             Err(_) => Value::from_serialize(Res {
                 status,
-                body: Vec::new(),
-                headers
+                headers,
+                body: Vec::new()
             })
         }
+    }
+
+    fn err(message: String) -> Value {
+        Value::from_serialize(Res {
+            status: 400,
+            headers: HashMap::new(),
+            body: message.as_bytes().to_vec()
+        })
     }
 }
