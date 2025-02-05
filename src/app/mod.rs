@@ -2,13 +2,17 @@ mod proxy;
 mod modify;
 mod context;
 
+use mime_guess;
 use proxy::Proxy;
 use modify::Modify;
-use axum::body::Body;
 use context::Context;
 use std::error::Error;
+use crate::debug::debug;
 use minijinja::Environment;
-use axum::http::{StatusCode, HeaderMap, HeaderName, HeaderValue, header};
+use std::collections::HashMap;
+use axum::body::{Bytes, Body};
+use axum::extract::{State, Path, Query, OriginalUri, MatchedPath};
+use axum::http::{Method, StatusCode, HeaderMap, HeaderName, HeaderValue, header};
 
 type Env = Environment<'static>;
 
@@ -92,5 +96,31 @@ impl AppState {
         }
 
         Ok((status, headers, body))
+    }
+}
+
+pub async fn handler (
+    state: State<AppState>,
+    OriginalUri(url): OriginalUri,
+    Path(params): Path<HashMap<String, String>>,
+    Query(vars): Query<HashMap<String, String>>,
+    route: MatchedPath,
+    headers: HeaderMap,
+    method: Method,
+    body: Bytes,
+) -> (StatusCode, HeaderMap, Body) {
+    let ctx = Context::new(route, params, vars, method, url, headers, body);
+    debug(&ctx.method, &ctx.url, None, "");
+    match state.run(&ctx).await {
+        Ok(response) => {
+            debug(&ctx.method, &ctx.url, Some(response.0.as_u16()), "");
+            response
+        },
+        Err(err) => {
+            let error = err.to_string();
+            let status = StatusCode::INTERNAL_SERVER_ERROR;
+            debug(&ctx.method, &ctx.url, Some(status.as_u16()), &error);
+            (status, HeaderMap::new(), error.into())
+        }
     }
 }
