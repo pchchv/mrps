@@ -11,4 +11,17 @@ pub struct AppState {
 }
 
 impl AppState {
+    pub fn new (env: &Env, template: &str) -> AppState {
+        AppState {
+            env: env.clone(),
+            template: template.to_string(),
+            mime: match mime_guess::from_path(template).first_raw() {
+                Some(mime) => match HeaderValue::from_str(mime) {
+                    Ok(mime) => Some(mime),
+                    Err(_) => None
+                },
+                None => None
+            }
+        }
+    }
 }
