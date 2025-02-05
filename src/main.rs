@@ -1,10 +1,11 @@
+mod app;
 mod debug;
 mod assets;
 mod config;
 mod templates;
 
-use std::path::PathBuf;
 use clap::Parser;
+use std::path::PathBuf;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
