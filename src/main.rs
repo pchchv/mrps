@@ -5,7 +5,18 @@ mod config;
 mod templates;
 
 use clap::Parser;
+use std::error::Error;
 use std::path::PathBuf;
+use axum::http::Method;
+use axum::extract::Path;
+use crate::assets::Assets;
+use crate::config::Config;
+use std::collections::HashMap;
+use crate::app::{AppState, handler};
+use axum::http::header::HeaderValue;
+use axum::routing::{Router, get, on};
+use tower_http::cors::{Any, CorsLayer};
+use axum_server::tls_openssl::OpenSSLConfig;
 
 #[derive(Parser)]
 #[command(author, version, about, long_about = None)]
@@ -41,6 +52,70 @@ struct Cli {
     /// ignore files based on glob match
     #[clap(short, long)]
     ignore: Option<String>,
+}
+
+fn init () -> Result<(Router, u16, Option<OpenSSLConfig>), Box<dyn Error>> {
+    let cli = Cli::parse();
+    let config = Config::new(cli.config.as_deref())?;
+    let mut app = Router::new();
+    if let Some(assets) = cli.assets.or(config.assets) {
+        let mut ignore: Vec<String> = Vec::new();
+        let has_home = assets.as_path().join("index.html").is_file();
+        if let Some(glob) = cli.ignore {
+            ignore.push(glob);
+            if let Some(globs) = config.ignore {
+                ignore.append(&mut globs.clone());
+            }
+        }
+
+        let loader = Assets::new(cli.all || config.all.unwrap_or(false), assets, ignore)?;
+        if has_home {
+            let loader2 = loader.clone();
+            app = app.route("/", get(|| async move {
+                loader2.get("")
+            }));
+        }
+        app = app.route("/*file", get(|
+            Path(params): Path<HashMap<String, String>>,
+        | async move {
+            loader.get(params.get("file").map_or("", |v| v))
+        }));
+    }
+
+    if let (Some(templates), Some(routes)) = (config.templates, config.routes) {
+        let env = templates::new(templates, config.data)?;
+        for route in &routes {
+            app = app.route(&route.path, on(
+                Method::from_bytes(route.method.as_bytes())?.try_into()?,
+                handler
+            ).with_state(AppState::new(&env, &route.template)));
+        }
+    }
+
+
+    let cors = if cli.allow_cors {Some(Vec::new())} else {config.cors};
+    if let Some(origins) = cors {
+        let mut layer = CorsLayer::new().allow_methods(Any);
+        if origins.len() == 0 {
+            layer = layer.allow_origin(Any);
+        }
+
+        for origin in origins {
+            layer = layer.allow_origin(origin.parse::<HeaderValue>()?);
+        }
+
+        app = app.layer(layer);
+    }
+
+    let port = cli.port.unwrap_or(config.port.unwrap_or(3000));
+    let mut ssl: Option<OpenSSLConfig> = None;
+    if let (Some(cert), Some(key)) = (
+        cli.cert.or(config.cert), cli.key.or(config.key)
+    ) {
+        ssl = Some(OpenSSLConfig::from_pem_file(cert, key)?);
+    }
+
+    Ok((app, port, ssl))
 }
 
 fn main() {}
