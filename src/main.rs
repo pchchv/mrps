@@ -9,6 +9,7 @@ use std::error::Error;
 use std::path::PathBuf;
 use axum::http::Method;
 use axum::extract::Path;
+use std::net::SocketAddr;
 use crate::assets::Assets;
 use crate::config::Config;
 use std::collections::HashMap;
@@ -118,4 +119,34 @@ fn init () -> Result<(Router, u16, Option<OpenSSLConfig>), Box<dyn Error>> {
     Ok((app, port, ssl))
 }
 
-fn main() {}
+#[tokio::main]
+async fn main() -> () {
+    let (app, port, ssl) = match init() {
+        Ok(server) => server,
+        Err(err) => {
+            println!("{}", err);
+            return ();
+        }
+    };
+    let addr = SocketAddr::from(([127, 0, 0, 1], port));
+    let server = match ssl {
+        Some(ssl) => {
+            println!("Server started at https://localhost:{}", port);
+            axum_server::bind_openssl(addr, ssl)
+                .serve(app.into_make_service()).await
+        },
+        None => {
+            println!("Server started at http://localhost:{}", port);
+            axum_server::bind(addr)
+                .serve(app.into_make_service()).await
+        }
+    };
+
+    match server {
+        Ok(_) => (),
+        Err(err) => {
+            println!("Fail to start server!\n{}", err.to_string());
+            ()
+        }
+    }
+}
