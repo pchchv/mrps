@@ -1,5 +1,6 @@
 use minijinja::Value;
 use std::error::Error;
+use serde::Deserialize;
 use std::collections::HashMap;
 use serde_derive::Deserialize;
 
