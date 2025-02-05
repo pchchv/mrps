@@ -2,6 +2,7 @@ mod file;
 mod parse;
 mod fetch;
 mod format;
+mod command;
 
 use file::IO;
 use parse::parse;
