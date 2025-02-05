@@ -7,6 +7,7 @@ mod command;
 use file::IO;
 use parse::parse;
 use std::error::Error;
+use command::command;
 use std::path::PathBuf;
 use format::{format, bytes};
 use minijinja::{Environment, path_loader, Value};
@@ -25,6 +26,7 @@ pub fn new(dir: PathBuf, data: Option<PathBuf>) -> Result<Environment<'static>, 
     env.add_function("head", head);
     env.add_function("options", options);
     env.add_function("delete", delete);
+    env.add_function("command", command);
     env.add_function("log", |message: &str| -> () {
         println!("{}", message);
         ()
