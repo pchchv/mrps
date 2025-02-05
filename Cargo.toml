@@ -24,3 +24,5 @@ serde_urlencoded = "0.7.1"
 tokio = {version = "1.43.0", features = ["full"]}
 reqwest = {version = "0.12.12", features = ["blocking"]}
 toml = "0.8.19"
+axum-server = {version = "0.7.1", features = ["tls-openssl"]}
+tower-http = {version = "0.6.2", features = ["cors"]}
