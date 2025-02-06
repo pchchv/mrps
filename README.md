@@ -16,14 +16,11 @@ Mini [reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy) server.
 
 ## [MiniJinja](https://github.com/mitsuhiko/minijinja) templates
 - [Reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy)
-- Send http requests in the template
 - Execute commands in the template
+- Send HTTP requests in the template
+- Parse and format to [JSON](https://www.json.org/json-en.html), [TOML](https://toml.io/en/) and [FormData](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)
 - Read, write and remove files from the filesystem
 - Modify the response headers and status in the template
-- Parse and format to:
-  - [JSON](https://www.json.org/json-en.html)
-  - [TOML](https://toml.io/en/)
-  - [FormData](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods/POST)
 
 ## Dependencies
 - [clap](https://github.com/clap-rs/clap)
