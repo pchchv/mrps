@@ -1,11 +1,11 @@
 [package]
-name = "rps"
+name = "mrps"
 version = "0.1.0"
-authors = ["Evgenii Pochechuev <pchchv@gmail.com>"]
+authors = ["Evgenii Pochechuev <pchchv@protom.me>"]
 edition = "2021"
 description = "Mini reverse proxy server"
 readme = "README.md"
-repository = "https://github.com/pchchv/rps"
+repository = "https://github.com/pchchv/mrps"
 license = "Apache-2.0"
 keywords = ["reverse-proxy", "server"]
 categories = ["web-programming::http-server"]
@@ -23,6 +23,6 @@ serde_json = "1.0.138"
 serde_urlencoded = "0.7.1"
 tokio = {version = "1.43.0", features = ["full"]}
 reqwest = {version = "0.12.12", features = ["blocking"]}
-toml = "0.8.19"
+toml = "0.8.20"
 axum-server = {version = "0.7.1", features = ["tls-openssl"]}
 tower-http = {version = "0.6.2", features = ["cors"]}
