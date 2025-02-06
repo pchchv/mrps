@@ -1,6 +1,9 @@
-# MRPS
 
-*Mini [reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy) server.*
+[![Version](https://img.shields.io/crates/v/mrps)](https://crates.io/crates/mrps)
+[![License: Apache 2.0](https://img.shields.io/badge/license-Apache%202.0-red)](https://github.com/pchchv/mrps/blob/main/LICENSE)
+[![Downloads](https://img.shields.io/crates/d/mrps)](https://crates.io/crates/mrps)
+
+# MRPS — *mini [reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy) server.*
 
 ## Features
 - [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
