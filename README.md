@@ -1,6 +1,6 @@
-# Mini RPS
+# MRPS
 
-Mini [reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy) server.
+*Mini [reverse proxy](https://en.wikipedia.org/wiki/Reverse_proxy) server.*
 
 ## Features
 - [CORS](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
