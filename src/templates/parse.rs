@@ -1,6 +1,3 @@
-use toml;
-use serde_json;
-use serde_urlencoded;
 use std::str::from_utf8;
 use minijinja::{Error, ErrorKind::InvalidOperation, Value};
 
@@ -22,7 +19,7 @@ pub fn parse (data: Vec<u8>, encoding: &str) -> Result<Value, Error> {
                 Err(err) => Err(Error::new(
                     InvalidOperation,
                     format!("Failed to parse from Form Data!\n{}",
-                        err.to_string()
+                        err
                     )
                 ))
             }
@@ -32,7 +29,7 @@ pub fn parse (data: Vec<u8>, encoding: &str) -> Result<Value, Error> {
                 Ok(value) => Ok(value),
                 Err(err) => Err(Error::new(
                     InvalidOperation,
-                    format!("Failed to parse from JSON!\n{}", err.to_string())
+                    format!("Failed to parse from JSON!\n{}", err)
                 ))
             }
         },
@@ -41,7 +38,7 @@ pub fn parse (data: Vec<u8>, encoding: &str) -> Result<Value, Error> {
                 Ok(value) => Ok(value),
                 Err(err) => Err(Error::new(
                     InvalidOperation,
-                    format!("Failed to parse from TOML!\n{}", err.to_string())
+                    format!("Failed to parse from TOML!\n{}", err)
                 ))
             }
         },

@@ -1,12 +1,9 @@
-use toml;
-use serde_json;
-use serde_urlencoded;
 use minijinja::{Error, ErrorKind::InvalidOperation, Value};
 
 pub fn format(value: &Value, encoding: &str) -> Result<String, Error> {
     match encoding {
         "form" => {
-            match serde_urlencoded::to_string::<Value>(value.clone().into()) {
+            match serde_urlencoded::to_string::<Value>(value.clone()) {
                 Ok(data) => Ok(data),
                 Err(err) => Err(Error::new(
                     InvalidOperation,
@@ -15,7 +12,7 @@ pub fn format(value: &Value, encoding: &str) -> Result<String, Error> {
             }
         },
         "json" => {
-            match serde_json::to_string_pretty(value.into()) {
+            match serde_json::to_string_pretty(value) {
                 Ok(data) => Ok(data),
                 Err(err) => Err(Error::new(
                     InvalidOperation,
@@ -24,7 +21,7 @@ pub fn format(value: &Value, encoding: &str) -> Result<String, Error> {
             }
         },
         "toml" => {
-            match toml::to_string_pretty(value.into()) {
+            match toml::to_string_pretty(value) {
                 Ok(data) => Ok(data),
                 Err(err) => Err(Error::new(
                     InvalidOperation,

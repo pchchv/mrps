@@ -1,4 +1,3 @@
-use mime_guess;
 use std::fs::read;
 use std::error::Error;
 use std::path::{Path, PathBuf};
@@ -41,7 +40,7 @@ impl Assets {
 
         let path_str = path.to_str().unwrap_or("");
         for glob in &self.ignore {
-            if glob_match(&glob, path_str) {
+            if glob_match(glob, path_str) {
                 return Err(StatusCode::NOT_FOUND);
             }
         }
@@ -50,7 +49,7 @@ impl Assets {
             for component in path.components() {
                 let name = component.as_os_str().to_str().unwrap_or("");
                 
-                if name.len() == 0 || (
+                if name.is_empty() || (
                     name.len() > 1 &&
                     name.as_bytes()[0] == b'.'
                 ) {
@@ -70,12 +69,9 @@ impl Assets {
         };
 
         let mime = mime_guess::from_path(&file).first_raw().unwrap_or("");
-        if mime.len() > 0 {
-            match HeaderValue::from_str(mime) {
-                Ok(mime) => {
-                    response.headers_mut().insert(CONTENT_TYPE, mime);
-                },
-                Err(_) => {}
+        if !mime.is_empty() {
+            if let Ok(mime) = HeaderValue::from_str(mime) {
+                response.headers_mut().insert(CONTENT_TYPE, mime);
             };
         }
 

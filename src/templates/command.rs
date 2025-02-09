@@ -15,9 +15,7 @@ pub fn command(command: String) -> Value {
         Err(err) => {
             return Value::from_serialize(Output {
                 code: 999999,
-                stdout: format!(
-                    "Fail to execute command!"
-                ).as_bytes().to_vec(),
+                stdout: "Fail to execute command!".to_string().as_bytes().to_vec(),
                 stderr: err.to_string().as_bytes().to_vec()
             });
         }

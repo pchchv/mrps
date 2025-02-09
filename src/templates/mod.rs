@@ -27,9 +27,8 @@ pub fn new(dir: PathBuf, data: Option<PathBuf>) -> Result<Environment<'static>, 
     env.add_function("options", options);
     env.add_function("delete", delete);
     env.add_function("command", command);
-    env.add_function("log", |message: &str| -> () {
+    env.add_function("log", |message: &str| {
         println!("{}", message);
-        ()
     });
     if let Some(data) = data {
         let io1 = IO::new(data)?;

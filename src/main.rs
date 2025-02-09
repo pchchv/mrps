@@ -97,7 +97,7 @@ fn init () -> Result<(Router, u16, Option<OpenSSLConfig>), Box<dyn Error>> {
     let cors = if cli.allow_cors {Some(Vec::new())} else {config.cors};
     if let Some(origins) = cors {
         let mut layer = CorsLayer::new().allow_methods(Any);
-        if origins.len() == 0 {
+        if origins.is_empty() {
             layer = layer.allow_origin(Any);
         }
 
@@ -120,12 +120,12 @@ fn init () -> Result<(Router, u16, Option<OpenSSLConfig>), Box<dyn Error>> {
 }
 
 #[tokio::main]
-async fn main() -> () {
+async fn main() {
     let (app, port, ssl) = match init() {
         Ok(server) => server,
         Err(err) => {
             println!("{}", err);
-            return ();
+            return;
         }
     };
     let addr = SocketAddr::from(([127, 0, 0, 1], port));
@@ -145,8 +145,7 @@ async fn main() -> () {
     match server {
         Ok(_) => (),
         Err(err) => {
-            println!("Fail to start server!\n{}", err.to_string());
-            ()
+            println!("Fail to start server!\n{}", err);
         }
     }
 }

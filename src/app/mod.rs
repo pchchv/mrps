@@ -2,7 +2,6 @@ mod proxy;
 mod modify;
 mod context;
 
-use mime_guess;
 use proxy::Proxy;
 use modify::Modify;
 use context::Context;
